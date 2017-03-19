@@ -23,7 +23,7 @@ static int parse_opt(int key, char *arg, struct argp_state *state);
 #define IS_L 1024
 
 static long input_check = 0;
-const char *argp_program_version = "version 3.0";
+const char *argp_program_version = "version 2.1";
 const char *argp_program_bug_address = "tontyoutoure@gmail.com";
 time_t timer;
 char str_log[FILENAME_MAX];
