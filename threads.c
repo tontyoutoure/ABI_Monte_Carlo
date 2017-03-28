@@ -188,7 +188,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 		}
 		else {
 			pho[i*7]=pho[i*7]-2*r,pho[i*7+1]=pho[i*7+1]-2*r;
-			pho[i*7+6]*=exp(-dis/abs(dL));
+			pho[i*7+6]*=exp(-dis/fabs(dL));
 			car2sph(pho+i*7+3,sc1);
 			sc1[1]=asin(sin(sc1[1])/n);
 			sph2car(sc1,pho+i*7+3);

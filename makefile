@@ -45,7 +45,7 @@ test : testmarco.c
 	$(CC) -o test testmarco.c $(CFLAGS) -lm
 
 tar :
-	tar -cf ./REF.tar options makefile *.c *.h *.sh tissues
+	tar -cf ./REF.tar options makefile *dat *.c *.h *.sh tissues
 
 clean :
 	rm *.o
