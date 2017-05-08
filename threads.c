@@ -22,7 +22,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 	unsigned long *end_position;
 	unsigned long pos_index[SIZE_OF_INDEX], number_of_indices;
 	double *cache2, *pho, *pos;
-	char is_using_dynamic_cache, is_within;
+	char is_using_dynamic_cache, is_within, is_length;
 	double cache1[SIZE_OF_CACHE];
 	double xy, n, dL;
 	long stat1, stat3, stat4, stat5;
@@ -33,6 +33,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 	r=(((struct ref_arg *)ARG)->ref_DIR).geo_r;
 	n=(((struct ref_arg *)ARG)->ref_DIR).ri_n;
 	dL=(((struct ref_arg *)ARG)->ref_DIR).ri_dL;
+	is_length=(((struct ref_arg *)ARG)->ref_DIR).L;
 
 	index_count=((struct ref_arg *)ARG)->index_count;
 	size_per_block=((struct ref_arg *)ARG)->size_per_block;
@@ -188,7 +189,10 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 		}
 		else {
 			pho[i*7]=pho[i*7]-2*r,pho[i*7+1]=pho[i*7+1]-2*r;
-			pho[i*7+6]*=exp(-dis/fabs(dL));
+			if(is_length)
+				pho[i*7+6]=dL;
+			else
+				pho[i*7+6]*=exp(-dis/fabs(dL));
 			car2sph(pho+i*7+3,sc1);
 			sc1[1]=asin(sin(sc1[1])/n);
 			sph2car(sc1,pho+i*7+3);

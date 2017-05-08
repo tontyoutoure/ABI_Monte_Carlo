@@ -20,6 +20,7 @@ struct ref_dir{
 	/*the geometry information of the tissue*/
 	double ri_n;
 	double ri_dL;
+	char L;
 	/*refraction index*/
 };
 

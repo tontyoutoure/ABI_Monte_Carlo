@@ -14,6 +14,9 @@ all : $(REF)
 $(REF) : $(REF).o $(threads).o $(PUBLICO)
 	$(CC) -o $(REF) $(REF).o $(threads).o $(PUBLICO) $(CFLAGS) $(CLIBS)
 
+$(REF)_1b : $(REF).o $(threads)_1b.o $(PUBLICO)
+	$(CC) -o $(REF) $(REF).o $(threads).o $(PUBLICO) $(CFLAGS) $(CLIBS)
+
 $(REF)_exp : $(REF)_exp.o $(threads)_exp.o $(PUBLICO)
 	$(CC) -o $(REF)_exp $(REF)_exp.o $(threads)_exp.o $(PUBLICO) $(CFLAGS) $(CLIBS)
 
@@ -28,6 +31,9 @@ $(REF)_exp.o : $(REF)_exp.c REF.h
 
 $(threads).o : $(threads).c REF.h
 	$(CC) $(CFLAGS) -c $(threads).c
+
+$(threads)_1b.o : $(threads)_1b.c REF.h
+	$(CC) $(CFLAGS) -c $(threads)_1b.c
 
 $(threads)_exp.o : $(threads)_exp.c REF.h
 	$(CC) $(CFLAGS) -c $(threads)_exp.c

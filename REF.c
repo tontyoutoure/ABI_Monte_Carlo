@@ -18,9 +18,10 @@ static int parse_opt(int key, char *arg, struct argp_state *state);
 #define IS_I 16
 #define IS_O 32
 #define IS_T 64
-#define IS_RI 256
+#define IS_N 256
 #define IS_H 512
 #define IS_L 1024
+#define IS_D 2048
 
 static long input_check = 0;
 const char *argp_program_version = "version 2.1";
@@ -36,6 +37,7 @@ struct argp_arg {
 	double *r;
 	double *n;
 	double *dL;
+	char *L;
 	unsigned long *NoT;
 	unsigned long *index_count;
 	char *str_in;
@@ -58,12 +60,13 @@ static struct argp_option opt[] = {
 	{"tissue-file", 't', "filename", 0, "Place the tissue file name (*)"},
 	{"number-of-threads", 'h', "number", 0, "Place the number of threads (*)"},
 	{"index-count", 'u', "number", 0, "Number of indexes of the looking table, each direction"},
+	{"lenGth", 'G', NULL, 0, "Record length instead of attenuation factor"},
 	{0}
 };
 
 int main(int argc, char *argv[]){
 	char str_in[FILENAME_MAX], str_tissue[FILENAME_MAX], str_out[FILENAME_MAX];
-	struct ref_dir DIR={0, 0, 0, 0, 0, 0};
+	struct ref_dir DIR={0, 0, 0, 0, 0, 0, 0};
 	unsigned long number_of_threads, number_of_photons, number_of_positions, index_count = 100, size_per_block;
 	FILE *flog, *fppho, *fppos;
 	double *pho, *pos, *posd;
@@ -73,7 +76,7 @@ int main(int argc, char *argv[]){
 
 	struct argp argp = {opt, parse_opt, NULL, "A monte carlo program for the caculation of DEI of lung tissue\n"
 	"Options with (*) should not be omitted"};
-	struct argp_arg arg = {&DIR.geo_a, &DIR.geo_b, &DIR.geo_c, &DIR.geo_r, &DIR.ri_n, &DIR.ri_dL, &number_of_threads, &index_count, str_in, str_tissue, str_out, str_log};
+	struct argp_arg arg = {&DIR.geo_a, &DIR.geo_b, &DIR.geo_c, &DIR.geo_r, &DIR.ri_n, &DIR.ri_dL, &DIR.L, &number_of_threads, &index_count, str_in, str_tissue, str_out, str_log};
 
 	/*initiating*/
 	timer=time(0);
@@ -83,15 +86,13 @@ int main(int argc, char *argv[]){
 	/*reading parameters*/
 	
 	argp_parse(&argp, argc, argv, 0, 0, &arg);
-	if(DIR.ri_n && DIR.ri_dL)
-		input_check |= IS_RI;
 
-	if((input_check | (IS_A | IS_B | IS_C | IS_R | IS_O | IS_T | IS_RI | IS_H | IS_L)) != input_check){
+	if((input_check | (IS_A | IS_B | IS_C | IS_R | IS_O | IS_T | IS_N | IS_H | IS_L | IS_D)) != input_check){
 		fprintf(stderr, "Maybe you lost a few inputs\n");
 		return -2;
 	}
 	
-/*Read sphere positions*/
+	/*Read sphere positions*/
 
 	fppos = fopen(str_tissue, "r");
 	if(fppos == NULL) {
@@ -104,8 +105,8 @@ int main(int argc, char *argv[]){
 	pos = malloc(sizeof(double)*number_of_positions*3);
 	fread(pos, sizeof(double), number_of_positions*3, fppos);
 	fclose(fppos);
-
-/*Read input photons*/
+	
+	/*Read input photons*/
 	fppho = fopen(str_in, "r");
 	if(fppho == NULL) {
 		fprintf(stderr, "Input file cannot be opened\n");
@@ -297,9 +298,14 @@ static int parse_opt(int key, char *arg, struct argp_state *state) {
 			break;
 		case 'L':
 			*(input -> dL) = atof(arg);
+			input_check |= IS_D;
+			break;
+		case 'G':
+			*(input -> L) = 1;
 			break;
 		case 'n':
 			*(input -> n) = atof(arg);
+			input_check |= IS_N;
 			break;
 		case 'e':
 			switch (atoi(arg)) {
