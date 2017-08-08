@@ -18,11 +18,12 @@ static int clean_cache(double *cache, unsigned long size);
 void *photons(void *ARG)/*parameter is the number of the balls*/
 {	
 	double d, d_, d1, d2, d3, sc1[3], sc2[3], x0, y0, r0, r2, X[3], X0[3], a, b, c, r, dis;
+	double thetax0, thetay0, thetaz0;
 	unsigned long i, j, k, eM, index_count, size_per_block;	
 	unsigned long *end_position;
 	unsigned long pos_index[SIZE_OF_INDEX], number_of_indices;
 	double *cache2, *pho, *pos;
-	char is_using_dynamic_cache, is_within, is_length;
+	char is_using_dynamic_cache, is_within;
 	double cache1[SIZE_OF_CACHE];
 	double xy, n, dL;
 	long stat1, stat3, stat4, stat5;
@@ -33,7 +34,6 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 	r=(((struct ref_arg *)ARG)->ref_DIR).geo_r;
 	n=(((struct ref_arg *)ARG)->ref_DIR).ri_n;
 	dL=(((struct ref_arg *)ARG)->ref_DIR).ri_dL;
-	is_length=(((struct ref_arg *)ARG)->ref_DIR).L;
 
 	index_count=((struct ref_arg *)ARG)->index_count;
 	size_per_block=((struct ref_arg *)ARG)->size_per_block;
@@ -52,6 +52,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 		cou(((struct ref_arg *)ARG)->ref_pmutex);
 
 		x0=pho[i*7], y0=pho[i*7+1];
+		thetax0 = pho[i*7+3], thetay0 = pho[i*7+4], thetaz0 = pho[i*7+5];
 		r0=r2;
 		is_within=1;
 		stat1 = 0; /*spheres that passes*/
@@ -62,7 +63,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 		while(is_within)
 		{
 			pho[i*7]=x0,pho[i*7+1]=y0,pho[i*7+2]=0;
-			pho[i*7+3]=0,pho[i*7+4]=0,pho[i*7+5]=1;
+			pho[i*7+3]=thetax0, pho[i*7+4]=thetay0, pho[i*7+5]=thetaz0;
 			dis = 0;
 			is_within = 0;
 			r0 = r0+r2;
@@ -189,10 +190,7 @@ void *photons(void *ARG)/*parameter is the number of the balls*/
 		}
 		else {
 			pho[i*7]=pho[i*7]-2*r,pho[i*7+1]=pho[i*7+1]-2*r;
-			if(is_length)
-				pho[i*7+6]=dL;
-			else
-				pho[i*7+6]*=exp(-dis/fabs(dL));
+			pho[i*7+6]*=exp(-dis/fabs(dL));
 			car2sph(pho+i*7+3,sc1);
 			sc1[1]=asin(sin(sc1[1])/n);
 			sph2car(sc1,pho+i*7+3);

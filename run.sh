@@ -15,7 +15,7 @@ for ((i=0; i<500; i=i+1)); do
 	./REF -i input.pho -t ../tissues/1b.tissue -o output.pho -a 0.01 -b 0.01 -c 0.1 -r 0.002 -l run.log --number-of-threads $NUMBER_OF_THREADS -n 0.999999963960949 -L -0.085681550167100 --index-count 1
 	MD5=$(md5sum output.pho|head -c $MD5LENGTH)
 	rm input.pho
-	mv output.pho /media/tontyoutoure/MobileDisk1/pho/1b/output_$MD5.pho
+#	mv output.pho /media/tontyoutoure/MobileDisk1/pho/1b/output_$MD5.pho
 done
 
 #for ((i=0; i<1000; i=i+1)); do

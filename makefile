@@ -42,7 +42,7 @@ $(threads)_exp_b.o : $(threads)_exp_b.c REF.h
 	$(CC) $(CFLAGS) -c $(threads)_exp_b.c
 
 light : mt19937ar.c light.c
-	$(CC) $(CFLAGS) -o light light.c
+	$(CC) $(CFLAGS) -o light light.c -lgsl -lgslcblas 
 
 profile : $(REF).o $(threads).o $(PUBLICO)
 	$(CC) -o $(REF)_profile $(REF).o $(threads).o $(PUBLICO) $(CFLAGS) $(CLIBS) -pg 

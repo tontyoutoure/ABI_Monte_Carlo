@@ -336,6 +336,8 @@ static int parse_opt(int key, char *arg, struct argp_state *state) {
 				default: 
 					argp_failure(state, 1, 0, "Input error with energy");
 			}
+			input_check |= IS_N;
+			input_check |= IS_D;
 			break;
 		case 'u':
 			if(atoi(arg) > 0) 
