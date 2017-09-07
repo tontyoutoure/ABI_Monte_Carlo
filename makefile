@@ -66,3 +66,6 @@ cleaninput :
 
 cleanoutput :
 	rm output*pho -f
+
+tissue:tissue.c tissue.h mt19937ar.c
+	$(CC) $(CFLAG) tissue.c -o tissue $(CLIB)
